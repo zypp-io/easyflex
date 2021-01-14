@@ -7,7 +7,7 @@ with open("requirements.txt") as fp:
     install_requires = fp.read()
 
 setup(
-    name="Easyflex",
+    name="easyflex",
     version="0.0.1",
     author="Melvin Folkers, Erfan Nariman",
     author_email="melvin@zypp.io, erfan@zypp.io",
