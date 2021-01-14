@@ -100,7 +100,7 @@ def pull_module(run_params, module_name):
         run_params, "{}_ds_fw_persoonsgegevens_all.pkl".format(run_params.adm_code)
     )
     regnrs = regnrs.fw_registratienummer.drop_duplicates().to_list()
-    if run_params.test:
+    if run_params.debug:
         regnrs = regnrs[:10]
 
     logging.info("loonspecificatie gegevens opvragen voor {} flexwerkers".format(len(regnrs)))
@@ -129,7 +129,7 @@ def pull_module(run_params, module_name):
                 [data_loonkosten, df_loonkosten], sort=False, ignore_index=True
             )
 
-            if not len(df) == operatie.limit or run_params.test:
+            if not len(df) == operatie.limit or run_params.debug:
                 run = False
 
             runcount += 1

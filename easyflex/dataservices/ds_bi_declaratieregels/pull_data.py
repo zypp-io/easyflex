@@ -32,7 +32,7 @@ def pull_jaar(jaar, maanden, run_params, module_name):
 
 def limit(run_params):
 
-    if run_params.test:
+    if run_params.debug:
         limit = 100
     else:
         limit = 5000
@@ -62,7 +62,7 @@ def pull_maand(run_params, parameters, velden):
         df = get_data(run_params, operatie)
         data = pd.concat([data, df], sort=False, ignore_index=True)
 
-        if not len(df) == operatie.limit or run_params.test:
+        if not len(df) == operatie.limit or run_params.debug:
             run = False
 
         runcount += 1

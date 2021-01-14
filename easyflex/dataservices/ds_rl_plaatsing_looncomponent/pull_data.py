@@ -13,7 +13,6 @@ def pull_module(run_params, module_name):
     runcount = 0
     data = pd.DataFrame()
     run = True
-    velden = pull_fields()
 
     while run:
         parameters = dict()
@@ -31,7 +30,7 @@ def pull_module(run_params, module_name):
         df = get_data(run_params, operatie)
         data = pd.concat([data, df], sort=False, ignore_index=True)
 
-        if not len(df) == operatie.limit or run_params.test:
+        if not len(df) == operatie.limit or run_params.debug:
             run = False
 
         runcount += 1

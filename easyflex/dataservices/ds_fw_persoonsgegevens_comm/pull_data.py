@@ -32,7 +32,7 @@ def pull_module(run_params, module_name):
         datasubset = get_data(run_params, operatie)
         data = data + datasubset
 
-        if not len(datasubset) == operatie.limit or run_params.test:
+        if not len(datasubset) == operatie.limit or run_params.debug:
             run = False
 
         runcount += 1
