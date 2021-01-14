@@ -1,7 +1,6 @@
 import logging
 from tqdm import tqdm
 from easyflex.functions import cat_modules
-from .azure import upload_to_blob
 import requests
 import xml.etree.ElementTree as ET
 from datetime import datetime
@@ -67,5 +66,4 @@ def save_pdf_loonspec(run_params, module_name):
         file_path = os.path.join(run_params.inputdir, filename)
         with open(file_path, "wb") as f:
             f.write(base64.decodebytes(base64pdf))
-        upload_to_blob(file_path, filename)
         logging.debug(f"{filename} succesvol opgeslagen. runtime:{datetime.now() - starttime}")
