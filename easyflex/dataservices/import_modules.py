@@ -37,7 +37,7 @@ from easyflex.dataservices.ds_rf_declaraties_all import pull_data as ds_rf_decla
 from easyflex.dataservices.functions import EasyflexParameters
 
 
-def query_all(run_params, modules, incremental, day_offset, years):
+def query_all(run_params, modules, incremental, day_offset, years, debug):
 
     werkmaatschappijen = get_client_settings()["administraties"]
 
@@ -48,6 +48,7 @@ def query_all(run_params, modules, incremental, day_offset, years):
             wm=wm,
             incremental=incremental,
             day_offset=day_offset,
+            debug=debug
         )
 
         query_dataservices(run_params, modules)

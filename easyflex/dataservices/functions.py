@@ -1,6 +1,5 @@
 import logging
 import os
-
 import yaml
 
 
@@ -31,7 +30,7 @@ class RunParameters:
 
 
 class EasyflexParameters(RunParameters):
-    def __init__(self, client, years, wm, incremental, day_offset):
+    def __init__(self, client, years, wm, incremental, day_offset, debug):
 
         super().__init__(
             client,
@@ -40,6 +39,7 @@ class EasyflexParameters(RunParameters):
         self.years = years
         self.incremental = incremental
         self.day_offset = day_offset
+        self.debug = debug
 
         client_settings = get_settings(os.environ.get("client_settings_path"))
         API_KEYS = client_settings["api_keys"]
