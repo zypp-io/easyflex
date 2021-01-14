@@ -11,7 +11,7 @@ def query(
     years=None,
     pre_cleanup=False,
     post_cleanup=True,
-    debug=False
+    debug=False,
 ):
 
     run_params = set_run_parameters()
@@ -19,7 +19,12 @@ def query(
     if pre_cleanup:
         cleanup(run_params.pickledir, ext=".pkl")
     query_all(
-        run_params, modules=modules, incremental=incremental, day_offset=day_offset, years=years, debug=debug
+        run_params,
+        modules=modules,
+        incremental=incremental,
+        day_offset=day_offset,
+        years=years,
+        debug=debug,
     )
     if post_cleanup:
         cleanup(run_params.stagingdir, ext=".csv")

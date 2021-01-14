@@ -48,7 +48,7 @@ def query_all(run_params, modules, incremental, day_offset, years, debug):
             wm=wm,
             incremental=incremental,
             day_offset=day_offset,
-            debug=debug
+            debug=debug,
         )
 
         query_dataservices(run_params, modules)
