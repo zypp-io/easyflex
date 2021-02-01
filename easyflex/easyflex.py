@@ -12,6 +12,7 @@ def query(
     pre_cleanup=False,
     post_cleanup=True,
     debug=False,
+    parameters=None,
 ):
 
     run_params = set_run_parameters()
@@ -25,6 +26,7 @@ def query(
         day_offset=day_offset,
         years=years,
         debug=debug,
+        parameters=parameters,
     )
     if post_cleanup:
         cleanup(run_params.stagingdir, ext=".csv")
