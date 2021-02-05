@@ -30,7 +30,38 @@ class RunParameters:
 
 
 class EasyflexParameters(RunParameters):
-    def __init__(self, client, years, wm, incremental, day_offset, debug):
+    def __init__(
+        self,
+        client: str,
+        years: list,
+        wm: str,
+        incremental: bool,
+        day_offset: int,
+        debug: bool,
+        parameters: dict,
+    ):
+        """
+
+        Parameters
+        ----------
+        client: str
+            Identifier voor de organisatie, bijvoorbeeld 'company-name'
+        years: list
+            list van jaren die uitgevraagd moeten worden (alleen indien noodzakelijk)
+        wm: str
+            Easyflex werkmaatschappij van de uitvraag.
+        incremental: bool
+            incremental=True is te gebruiken in combinatie met day_offset. alleen nieuwe records
+            worden uitgevraagd. incremental=False (default) geeft alle records terug.
+        day_offset: int
+            cutoff waarde. Deze waarde wordt gebruikt om in geval van een incremental update een
+            knip te zetten op records die zijn aangemaakt tussen nu en 'day_offset' dagen geleden.
+        debug: bool
+            debug=True voor testen. default=False
+        parameters: dict
+            additionele parameters die gebruikt worden in de request. Bijvoorbeeld in module
+            ds_wm_notificaties waar op basis van onderwerp een uitvraag wordt gedaan.
+        """
 
         super().__init__(
             client,
@@ -40,6 +71,7 @@ class EasyflexParameters(RunParameters):
         self.incremental = incremental
         self.day_offset = day_offset
         self.debug = debug
+        self.parameters = parameters
 
         client_settings = get_settings(os.environ.get("client_settings_path"))
         API_KEYS = client_settings["api_keys"]

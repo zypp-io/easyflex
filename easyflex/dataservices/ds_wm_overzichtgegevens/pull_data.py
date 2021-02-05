@@ -16,10 +16,10 @@ def pull_module(run_params, module_name):
     velden = pull_fields()
 
     while run:
-        parameters = dict()
+        parameters = {"berichtbron": 10052, "medewerker": 16612}
         operatie = OperatieParameters(
-            naam="ds_wm_medewerkers",
-            output_prefix="mw_",
+            naam="ds_wm_overzichtgegevens",
+            output_prefix="",
             parameters=parameters,
             fields=velden,
             limit=5000,
@@ -44,7 +44,7 @@ def export_module(data, module_name, run_params):
 
     data = format_data(data)
     data["werkmaatschappij"] = run_params.adm_code
-    data["mw_id"] = data["werkmaatschappij"] + " - " + data["mw_medewerkernummer"]
+    data["ovz_id"] = data["werkmaatschappij"] + " - " + data["wm_overzicht_identificatie"]
     filename = "{}_{}.pkl".format(run_params.adm_code, module_name)
     data.to_pickle(os.path.join(run_params.pickledir, filename))
     logging.info("{} geexporteerd! ({} records)".format(filename, len(data)))

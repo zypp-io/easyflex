@@ -33,11 +33,12 @@ from easyflex.dataservices.ds_fw_loonspecificatiegegevens import (
 )
 from easyflex.dataservices.ds_fw_loonspecificatie import pull_data as ds_fw_loonspecificatie
 from easyflex.dataservices.ds_rf_declaraties_all import pull_data as ds_rf_declaraties_all
+from easyflex.dataservices.ds_wm_overzichtgegevens import pull_data as ds_wm_overzichtgegevens
 
 from easyflex.dataservices.functions import EasyflexParameters
 
 
-def query_all(run_params, modules, incremental, day_offset, years, debug):
+def query_all(run_params, modules, incremental, day_offset, years, debug, parameters):
 
     werkmaatschappijen = get_client_settings()["administraties"]
 
@@ -49,6 +50,7 @@ def query_all(run_params, modules, incremental, day_offset, years, debug):
             incremental=incremental,
             day_offset=day_offset,
             debug=debug,
+            parameters=parameters,
         )
 
         query_dataservices(run_params, modules)
@@ -105,3 +107,5 @@ def query_dataservices(run_params, modules):
         ds_fw_loonspecificatie.save_pdf_loonspec(run_params, "ds_fw_loonspecificatie")
     if "ds_rf_declaraties_all" in modules:
         ds_rf_declaraties_all.pull_module(run_params, "ds_rf_declaraties_all")
+    if "ds_wm_overzichtgegevens" in modules:
+        ds_wm_overzichtgegevens.pull_module(run_params, "ds_wm_overzichtgegevens")
