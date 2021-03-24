@@ -1,7 +1,6 @@
 from easyflex.dataservices.import_modules import query_all
 from easyflex.functions import cleanup, cat_modules
 from easyflex.run_settings import set_run_parameters
-import logging
 import pandas as pd
 
 
