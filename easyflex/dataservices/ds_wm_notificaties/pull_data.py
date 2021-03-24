@@ -19,7 +19,6 @@ def pull_module(run_params, module_name):
         "Locatie verwijderd",
         "Locatie toegevoegd",
         "Locatie gewijzigd",
-
     ]
 
     for onderwerp in tqdm(onderwerpen, desc="uitvragen van onderwerpen..."):
