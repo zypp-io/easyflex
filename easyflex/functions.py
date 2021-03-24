@@ -23,7 +23,7 @@ def set_logging(run_params):
 
 def set_logging_file(run_params):
 
-    logfilename = "runlog_" + datetime.now().strftime(format="%Y%m%d_%H%M") + ".log"
+    logfilename = "runlog_" + datetime.now().strftime(fmt="%Y%m%d_%H%M") + ".log"
     full_path = os.path.join(run_params.logdir, logfilename)
     logging.basicConfig(
         filename=full_path,
