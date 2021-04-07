@@ -11,7 +11,7 @@ def query(
     years: list = None,
     pre_cleanup: bool = False,
     post_cleanup: bool = True,
-    client_settings_path: str = None
+    client_settings_path: str = None,
 ) -> pd.DataFrame:
     """
     De query functie bevraagt de easyflex API op basis van de gekozen module en jaren. Het resultaat
