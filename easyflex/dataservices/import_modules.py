@@ -35,9 +35,10 @@ from easyflex.dataservices.ds_fw_loonspecificatie import pull_data as ds_fw_loon
 from easyflex.dataservices.ds_rf_declaraties_all import pull_data as ds_rf_declaraties_all
 
 from easyflex.dataservices.functions import EasyflexParameters
+import logging
 
 
-def query_all(run_params, modules, incremental, day_offset, years, debug):
+def query_all(run_params, module, incremental, day_offset, years, debug):
 
     werkmaatschappijen = get_client_settings()["administraties"]
 
@@ -51,57 +52,59 @@ def query_all(run_params, modules, incremental, day_offset, years, debug):
             debug=debug,
         )
 
-        query_dataservices(run_params, modules)
+        query_dataservices(run_params, module)
 
 
-def query_dataservices(run_params, modules):
-    if "ds_wm_medewerkers" in modules:
+def query_dataservices(run_params, module):
+    if module == "ds_wm_medewerkers":
         ds_wm_medewerkers.pull_module(run_params, "ds_wm_medewerkers")
-    if "ds_bi_declaratieregels" in modules:
+    elif module == "ds_bi_declaratieregels":
         ds_bi_declaratieregels.pull_module(run_params, "ds_bi_declaratieregels")
-    if "bi_matchkeys" in modules:
+    elif module == "bi_matchkeys":
         ds_bi_declaratieregels.pull_module(run_params, "bi_matchkeys")
-    if "ds_rl_kostenplaatsen" in modules:
+    elif module == "ds_rl_kostenplaatsen":
         ds_rl_kostenplaatsen.pull_module(run_params, "ds_rl_kostenplaatsen")
-    if "ds_fw_fases" in modules:
+    elif module == "ds_fw_fases":
         ds_fw_fases.pull_module(run_params, "ds_fw_fases")
-    if "ds_fw_huidige_fase" in modules:
+    elif module == "ds_fw_huidige_fase":
         ds_fw_huidige_fase.pull_module(run_params, "ds_fw_huidige_fase")
-    if "ds_fw_fase_details" in modules:
+    elif module == "ds_fw_fase_details":
         ds_fw_fase_details.pull_module(run_params, "ds_fw_fase_details")
-    if "ds_rl_bedrijfsgegevens" in modules:
+    elif module == "ds_rl_bedrijfsgegevens":
         ds_rl_bedrijfsgegevens.pull_module(run_params, "ds_rl_bedrijfsgegevens")
-    if "ds_wm_locaties" in modules:
+    elif module == "ds_wm_locaties":
         ds_wm_locaties.pull_module(run_params, "ds_wm_locaties")
-    if "ds_rl_plaatsingen" in modules:
+    elif module == "ds_rl_plaatsingen":
         ds_rl_plaatsingen.pull_module(run_params, "ds_rl_plaatsingen")
-    if "ds_rl_plaatsing_looncomponent" in modules:
+    elif module == "ds_rl_plaatsing_looncomponent":
         ds_rl_plaatsing_looncomponent.pull_module(run_params, "ds_rl_plaatsing_looncomponent")
-    if "ds_fw_loonjournaal" in modules:
+    elif module == "ds_fw_loonjournaal":
         ds_fw_loonjournaal.pull_module(run_params, "ds_fw_loonjournaal")
-    if "ds_fw_journaalposten" in modules:
+    elif module == "ds_fw_journaalposten":
         ds_fw_journaalposten.pull_module(run_params, "ds_fw_journaalposten")
-    if "ds_rl_fw_uren" in modules:
+    elif module == "ds_rl_fw_uren":
         ds_rl_fw_uren.pull_module(run_params, "ds_rl_fw_uren")
-    if "ds_fw_arbeidscontract" in modules:
+    elif module == "ds_fw_arbeidscontract":
         ds_fw_arbeidscontract.pull_module(run_params, "ds_fw_arbeidscontract")
-    if "ds_fw_memovelden" in modules:
+    elif module == "ds_fw_memovelden":
         ds_fw_memovelden.pull_module(run_params, "ds_fw_memovelden")
-    if "ds_fw_persoonsgegevens_all" in modules:
+    elif module == "ds_fw_persoonsgegevens_all":
         ds_fw_persoonsgegevens_all.pull_module(run_params, "ds_fw_persoonsgegevens_all")
-    if "ds_fw_persoonsgegevens_comm" in modules:
+    elif module == "ds_fw_persoonsgegevens_comm":
         ds_fw_persoonsgegevens_comm.pull_module(run_params, "ds_fw_persoonsgegevens_comm")
-    if "ds_fw_wwpremie" in modules:
+    elif module == "ds_fw_wwpremie":
         ds_fw_wwpremie.pull_module(run_params, "ds_fw_wwpremie")
-    if "ds_rf_declaraties_perioden" in modules:
+    elif module == "ds_rf_declaraties_perioden":
         ds_rf_declaraties_perioden.pull_module(run_params, "ds_rf_declaraties_perioden")
-    if "ds_fw_reserveringen" in modules:
+    elif module == "ds_fw_reserveringen":
         ds_fw_reserveringen.pull_module(run_params, "ds_fw_reserveringen")
-    if "ds_wm_notificaties" in modules:
+    elif module == "ds_wm_notificaties":
         ds_wm_notificaties.pull_module(run_params, "ds_wm_notificaties")
-    if "ds_fw_loonspecificatiegegevens" in modules:
+    elif module == "ds_fw_loonspecificatiegegevens":
         ds_fw_loonspecificatiegegevens.pull_module(run_params, "ds_fw_loonspecificatiegegevens")
-    if "ds_fw_loonspecificatie" in modules:
+    elif module == "ds_fw_loonspecificatie":
         ds_fw_loonspecificatie.save_pdf_loonspec(run_params, "ds_fw_loonspecificatie")
-    if "ds_rf_declaraties_all" in modules:
+    elif module == "ds_rf_declaraties_all":
         ds_rf_declaraties_all.pull_module(run_params, "ds_rf_declaraties_all")
+    else:
+        logging.info(f"module {module} onbekend.")

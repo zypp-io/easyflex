@@ -8,7 +8,7 @@ with open("requirements.txt") as fp:
 
 setup(
     name="easyflex",
-    version="0.0.1",
+    version="0.0.3",
     author="Melvin Folkers, Erfan Nariman",
     author_email="melvin@zypp.io, erfan@zypp.io",
     description="Data queryen vanuit Easyflex",

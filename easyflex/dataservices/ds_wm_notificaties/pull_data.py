@@ -7,6 +7,7 @@ from easyflex.dataservices.soap_request import OperatieParameters
 from easyflex.dataservices.soap_request import get_data
 from .fields import pull_fields
 from .format import format_data
+from tqdm import tqdm
 
 
 def pull_module(run_params, module_name):
@@ -15,12 +16,12 @@ def pull_module(run_params, module_name):
     velden = pull_fields()
 
     onderwerpen = [
-        "betaalgegevens gewijzigd",
-        "algemene gegevens gewijzigd",
-        "flexwerker loonspecificaties gewijzigd",
+        "Locatie verwijderd",
+        "Locatie toegevoegd",
+        "Locatie gewijzigd",
     ]
 
-    for onderwerp in onderwerpen:
+    for onderwerp in tqdm(onderwerpen, desc="uitvragen van onderwerpen..."):
         runcount = 0
         run = True
         while run:
