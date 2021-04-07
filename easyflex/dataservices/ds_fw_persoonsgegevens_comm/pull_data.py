@@ -39,8 +39,8 @@ def pull_module(run_params, module_name):
 
     df = create_dataframe(data, operatie)
 
-    if len(data):
-        export_module(data, module_name, run_params)
+    if len(df):
+        export_module(df, module_name, run_params)
 
 
 def get_data(run_params, operatie):

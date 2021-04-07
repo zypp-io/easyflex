@@ -23,10 +23,9 @@ def get_client_settings():
     return client_settings
 
 
-def set_run_parameters():
+def set_run_parameters(client_settings_path):
     load_dotenv(override=True)
 
-    client_settings_path = os.environ.get("client_settings_path")
     client_settings = get_settings(client_settings_path)
     client_name = client_settings["client_name"]
 

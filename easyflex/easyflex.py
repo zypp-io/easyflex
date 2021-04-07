@@ -12,9 +12,10 @@ def query(
     pre_cleanup=False,
     post_cleanup=True,
     debug=False,
+    client_settings_path=None
 ):
 
-    run_params = set_run_parameters()
+    run_params = set_run_parameters(client_settings_path)
 
     if pre_cleanup:
         cleanup(run_params.pickledir, ext=".pkl")
