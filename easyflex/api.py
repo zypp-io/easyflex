@@ -1,9 +1,8 @@
-import logging
-import os
 from xml.etree import ElementTree as Et
-import requests
-import pandas as pd
 from easyflex.exceptions import ServiceNotKnownError
+import requests
+import logging
+import pandas as pd
 
 
 class OperatieParameters:
@@ -13,11 +12,8 @@ class OperatieParameters:
         self.naam = naam
         self.runcount = runcount
         self.limit = limit
-
-        parameters = self.vanaf_tm(parameters)
-
-        self.parameters_xml = self.parameters_xml(parameters)
-        self.fields_xml = self.fields_xml(fields)
+        self.parameters = self.create_parameters(parameters)
+        self.fields = fields
 
         self.headers = {"content-type": "text/xml"}
 
@@ -32,67 +28,22 @@ class OperatieParameters:
 
         self.ns, self.ns_txt = self.namespaces()
 
-    def vanaf_tm(self, parameters):
+    def parameters_vanaf_tm(self):
 
-        parameters["vanaf"] = 1 + (self.limit * self.runcount)
-        parameters["totenmet"] = self.limit + (self.limit * self.runcount)
+        additional_params = dict()
+        additional_params["vanaf"] = 1 + (self.limit * self.runcount)
+        additional_params["totenmet"] = self.limit + (self.limit * self.runcount)
+
+        return additional_params
+
+    def create_parameters(self, parameters):
+        if parameters is None:
+            parameters = {}
+
+        additional_parameters = self.parameters_vanaf_tm()
+        parameters = {**parameters, **additional_parameters}
 
         return parameters
-
-    @staticmethod
-    def parameters_xml(parameters):
-
-        xml_lines = list()
-
-        for parameter_name, parameter_value in parameters.items():
-            xml_lines.append(
-                "<urn:{}>{}</urn:{}>".format(parameter_name, parameter_value, parameter_name)
-            )
-
-        xml_lines = "\n".join(xml_lines)
-        xml_format = """<urn:parameters>\n{}\n</urn:parameters>""".format(xml_lines)
-
-        return xml_format
-
-    @staticmethod
-    def fields_xml(fields):
-
-        if fields is None:
-            fields = list()
-        xml_lines = ["""<urn:{}></urn:{}>""".format(x, x) for x in fields]
-        xml_lines = "\n".join(xml_lines)
-
-        xml_format = """<urn:fields>\n{}\n</urn:fields>""".format(xml_lines)
-
-        return xml_format
-
-    def export_module(self, data, module_name, run_params):
-
-        data["werkmaatschappij"] = run_params.adm_code
-
-        filename = "{}_{}.pkl".format(run_params.adm_code, module_name)
-        data.to_pickle(os.path.join(run_params.pickledir, filename))
-        logging.info("{} geexporteerd! ({} records)".format(filename, len(data)))
-
-    def check_for_errors(self, content):
-
-        fault = content.find("ds:Fault/detail/detail", self.ns)
-        if fault is not None:
-            logging.warning("foutcode van easyflex server: {}".format(fault.text))
-
-    def create_body(self):
-        body = f"""<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:{self.urn}">
-                    <soapenv:Header/>
-                        <soapenv:Body>
-                            <urn:{self.naam}>
-                                <urn:license>{self.api_key}</urn:license>
-                                {self.parameters_xml}
-                                {self.fields_xml}
-                            </urn:{self.naam}>
-                    </soapenv:Body>
-                </soapenv:Envelope>"""
-
-        return body
 
     def namespaces(self):
         ns = {
@@ -122,10 +73,10 @@ class OperatieParameters:
 
     def parse_all_data(self, content):
 
-        result = content.findall("urn:{}_result/urn:fields/urn:item".format(self.naam), self.ns)
+        result = content.findall(f"urn:{self.naam}_result/urn:fields/urn:item", self.ns)
 
         if not result:
-            result = content.findall("urn:{}_result/urn:fields".format(self.naam), self.ns)
+            result = content.findall(f"urn:{self.naam}_result/urn:fields", self.ns)
 
         data = list()  # maak een lege lijst aan waar records aan toe kunnen worden gevoegd
 
@@ -141,10 +92,58 @@ class OperatieParameters:
 
         return df
 
+    def check_for_errors(self, content):
+
+        fault = content.find("ds:Fault/detail/detail", self.ns)
+        if fault is not None:
+            logging.warning("foutcode van easyflex server: {}".format(fault.text))
+
+    def add_fields(self, topelement):
+        fields_xml = Et.SubElement(topelement, "fields")
+
+        if self.fields is not None:
+            for field in self.fields:
+                Et.SubElement(fields_xml, f"urn:{field}")
+
+    def add_parameters(self, topelement):
+        parameters_xml = Et.SubElement(topelement, "parameters")
+
+        if self.parameters is not None:
+            for name, value in self.parameters.items():
+                parameter = Et.SubElement(parameters_xml, name)
+                parameter.text = str(value)
+
+    def add_body(self, topelement):
+        body = Et.SubElement(topelement, "soapenv:Body")
+        module = Et.SubElement(body, f"urn:{self.naam}")
+        license_xml = Et.SubElement(module, "urn:license")
+        license_xml.text = self.api_key
+
+        return module
+
+    def create_envelope(self):
+
+        xml_request = Et.Element("soapenv:Envelope")
+        xml_request.set("xmlns:soapenv", "http://schemas.xmlsoap.org/soap/envelope/")
+        xml_request.set("xmlns:urn", f"urn:{self.urn}")
+        Et.SubElement(xml_request, "soapenv:Header")
+
+        return xml_request
+
+    def build_soap_request(self):
+        xml_request = self.create_envelope()
+        body = self.add_body(xml_request)
+        self.add_parameters(body)
+        self.add_fields(body)
+
+        xml_request_str = Et.tostring(xml_request)
+
+        return xml_request_str
+
     def post_request(self):
 
-        body = self.create_body()
-        response = requests.post(url=self.endpoint, data=body, headers=self.headers)
+        xml_request = self.build_soap_request()
+        response = requests.post(url=self.endpoint, data=xml_request, headers=self.headers)
         content = Et.fromstring(response.content.decode("utf-8")).find("ds:Body", self.ns)
         self.check_for_errors(content)
         df = self.parse_all_data(content)
