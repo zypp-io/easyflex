@@ -1,5 +1,2 @@
 pandas~=1.2.0
-python-dotenv
-pyyaml
-pytest
-git+ssh://git@github.com/zypp-io/keyvault.git
+tqdm
