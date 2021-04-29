@@ -8,14 +8,14 @@ with open("requirements.txt") as fp:
 
 setup(
     name="easyflex",
-    version="0.0.3",
+    version="0.0.4",
     author="Melvin Folkers, Erfan Nariman",
     author_email="melvin@zypp.io, erfan@zypp.io",
-    description="Data queryen vanuit Easyflex",
+    description="Python project voor het ontsluiten van data met de Easyflex API",
     long_description=long_description,
     long_description_content_type="text/markdown",
     keywords="python, easyflex",
-    url="https://github.com/staffingassociates/metachecks",
+    url="https://github.com/zypp-io/easyflex",
     packages=find_packages(),
     install_requires=install_requires,
     include_package_data=True,
@@ -26,7 +26,7 @@ setup(
     ],
     python_requires=">=3.6",
     project_urls={
-        "Bug Reports": "https://github.com/staffingassociates/metachecks/issues",
-        "Source": "https://github.com/staffingassociates/metachecks",
+        "Bug Reports": "https://github.com/zypp-io/easyflex/issues",
+        "Source": "https://github.com/zypp-io/easyflex",
     },
 )
