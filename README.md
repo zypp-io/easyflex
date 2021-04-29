@@ -4,8 +4,8 @@
 ## Project documentatie
 - [Introductie](#introductie)
 - [Hoe moet je dit project gebruiken?](#hoe-moet-je-dit-project-gebruiken?)
-    -[Simpel voorbeeld](#simpel-voorbeeld-zonder-velden-of-parameters)
-    -[Voorbeeld met parameters en velden](#voorbeeld-met-parameters-en-velden)
+    - [Simpel voorbeeld](#simpel-voorbeeld-zonder-velden-of-parameters)
+    - [Voorbeeld met parameters en velden](#voorbeeld-met-parameters-en-velden)
 
 # Introductie
 Easyflex heeft een API ontwikkeld voor het ontsluiten van data. Op basis van de [Easyflex web- en dataservices documentatie](https://confluence.easyflex.net/display/WEBDATAKLNT/Web-+en+dataservice) is dit python project ontstaan.
