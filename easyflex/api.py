@@ -6,16 +6,17 @@ import pandas as pd
 
 
 class OperatieParameters:
-    def __init__(self,
-                 api_key: str,
-                 adm_code: str,
-                 naam: str,
-                 parameters: dict,
-                 fields: list,
-                 limit: int,
-                 runcount: int,
-                 service: str
-                 ):
+    def __init__(
+        self,
+        api_key: str,
+        adm_code: str,
+        naam: str,
+        parameters: dict,
+        fields: list,
+        limit: int,
+        runcount: int,
+        service: str,
+    ):
         """
 
         Parameters
@@ -284,7 +285,7 @@ class OperatieParameters:
         self.add_parameters(body)
         self.add_fields(body)
 
-        xml_request_str = Et.tostring(xml_request).decode('utf-8')
+        xml_request_str = Et.tostring(xml_request).decode("utf-8")
 
         return xml_request_str
 

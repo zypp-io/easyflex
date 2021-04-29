@@ -18,9 +18,11 @@ def test_ds_wm_medewerkers():
 def test_ds_wm_locaties():
     api_keys = get_keyvault_secrets(keyvault_name="easyflex-tests")
     ef = Easyflex(api_keys, service="dataservice")
-    data = ef.query(module="ds_wm_locaties",
-                    parameters={"status": 21690},
-                    velden=["wm_locatie_nummer", "wm_locatie_code", "wm_locatie_naam"])
+    data = ef.query(
+        module="ds_wm_locaties",
+        parameters={"status": 21690},
+        velden=["wm_locatie_nummer", "wm_locatie_code", "wm_locatie_naam"],
+    )
 
     logging.info(f"end of test! imported {data.shape[0]} records")
 

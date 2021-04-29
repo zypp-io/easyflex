@@ -95,12 +95,13 @@ class Easyflex:
         data.to_pickle(os.path.join(self.directory.name, "pickles", filename))
         logging.debug("{} geexporteerd! ({} records)".format(filename, len(data)))
 
-    def request_data(self,
-                     module: str,
-                     administratie: str,
-                     parameters: dict = None,
-                     velden: list = None,
-                     ):
+    def request_data(
+        self,
+        module: str,
+        administratie: str,
+        parameters: dict = None,
+        velden: list = None,
+    ):
         """
 
         Parameters
