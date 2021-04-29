@@ -1,32 +1,40 @@
 # Easyflex dataservices API voor python
-Dit project bevat python scripts voor het ontsluiten van data uit de easyflex API.
-De datasets zijn groot en worden met een .csv bestand weggeschreven naar Azure Blob Storage.
-In Azure Data Factory gaat een process trigger af en de data wordt in de database geladen.
+> Dit project bevat python scripts voor het ontsluiten van data uit de easyflex API.
 
-## De aanpak:
-1. Pas de klant settings aan op basis van de template `yml/default/template_client_settings.yml` <br>
-    ```
-    - client_name: naam van de klant
-    - administraties: lijst met administraties die in de routine gebruikt moeten worden
-    - api_keys: lijst van alle API Keys
-     ```
-   
-2. Kies de modules en analyses op basis van de template `yml/default/default_run_settings.yml`
-   ```
-    - refresh: True voor verversen van API data
-    - upload: True voor uploaden naar Azure
-    - years: lijst met jaren voor het ophalen van historische data
-    - debug: True voor testruns
-    - modules: lijst met gekozen module nummers (zie `yml/catalog/default/` voor keuzes)
-    - analysis: lijst met gekozen analyse nummers (zie `yml/catalog/default/` voor keuzes)
-    - incremental: Optie om alleen nieuwe records binnen te halen
-    - day_offset: aantal dagen sinds vandaag: bedoeld om records binnen te halen vanaf deze datum
-   ```
-3. Plaats de 2 yaml bestanden in de map `yml/custom/`
-4. run het script `main.py`
-5. voor crontab: gebruik main.py `yml/custom/<run_settings_file>.yml` om specifieke parameters te gebruiken.
+## Project documentatie
+- [Introductie](#introductie)
+- [Hoe moet je dit project gebruiken?](#hoe-moet-je-dit-project-gebruiken?)
+    -[Simpel voorbeeld](#simpel-voorbeeld-zonder-velden-of-parameters)
+    -[Voorbeeld met parameters en velden](#voorbeeld-met-parameters-en-velden)
 
+# Introductie
+Easyflex heeft een API ontwikkeld voor het ontsluiten van data. Op basis van de [Easyflex web- en dataservices documentatie](https://confluence.easyflex.net/display/WEBDATAKLNT/Web-+en+dataservice) is dit python project ontstaan.
+Het doel van het project is om snel en efficient data te ontsluiten van 1 of meerdere Easyflex administraties.
+
+# Hoe moet je dit project gebruiken?
+In twee stappen is het mogelijk om data te ontsluiten. De eerste stap is het initialiseren van de class `Easyflex`. In deze class registreren worden de API keys geregistreerd die gebruikt worden bij de uitvraag.
+De tweede stap is het uitvragen van de dataservices of webservices. Hier moet een module naam worden opgegeven. Vervolgens kunnen de parameters en velden worden opgegeven, conform de [documentatie van de modules](https://confluence.easyflex.net/display/WEBDATAKLNT/1.2+ds_wm_medewerkers).
+
+### Simpel voorbeeld zonder velden of parameters
+```python
+from easyflex import Easyflex
+api_keys = {"<YOUR_ADM_CODE>": "<YOUR_API_KEY>","<YOUR_ADM_CODE_2>": "<YOUR_API_KEY_2>"}
+
+ef = Easyflex(api_keys, service="dataservice")
+data = ef.query(module="ds_wm_medewerkers")
+```
+
+### Voorbeeld met parameters en velden
+```python
+from easyflex import Easyflex
+api_keys = {"<YOUR_ADM_CODE>": "<YOUR_API_KEY>","<YOUR_ADM_CODE_2>": "<YOUR_API_KEY_2>"}
+
+ef = Easyflex(api_keys, service="dataservice")
+data = ef.query(module="ds_wm_locaties",
+                parameters={"status": 21690},
+                velden=["wm_locatie_nummer", "wm_locatie_code", "wm_locatie_naam"])
+```
 
 ## Onderhouden door:
 
-- [Melvin Folkers](https://github.com/melvinfolkers)
+- [Melvin Folkers - Zypp](https://github.com/zypp-io)
