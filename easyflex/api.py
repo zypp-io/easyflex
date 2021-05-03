@@ -159,9 +159,9 @@ class OperatieParameters:
             kolomwaarde = bool(kolomwaarde)
         elif datatype == "xsd:string":
             kolomwaarde = str(kolomwaarde)
-        elif datatype.find("Array") != -1:
-            return kolomwaarde
         elif datatype is None:
+            return kolomwaarde
+        elif datatype.find("Array") != -1:
             return kolomwaarde
         else:
             logging.info(f"datatype {datatype} van veld {kolomnaam} niet gecast")
