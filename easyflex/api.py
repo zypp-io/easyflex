@@ -3,6 +3,7 @@ from easyflex.exceptions import ServiceNotKnownError
 import requests
 import logging
 import pandas as pd
+import os
 from datetime import datetime
 from typing import Union
 
@@ -191,6 +192,29 @@ class OperatieParameters:
 
         return data
 
+    @staticmethod
+    def remove_common_prefix(df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Deze functie zorgt ervoor dat de prefix van de kolomnamen wordt bepaald, en vervolgens
+        verwijderd. vaak is de prefix gelijk aan de modulenaam, bijvoorbeeld ds_wm_medewerkers.
+        Omdat dit niet altijd het geval is, bepalen we met os.path.commonprefix wat de prefix is.
+
+        Parameters
+        ----------
+        df: pd.DataFrame
+            dataset met oorspronkelijke kolomnamen
+
+        Returns
+        -------
+        df: pd.DataFrame
+            dataset met de nieuwe kolomnamen, zonder de overeenkomende voorvoegsel.
+        """
+
+        original_columns = df.columns.to_list()
+        df.columns = df.columns.str.replace(os.path.commonprefix(original_columns), "")
+
+        return df
+
     def parse_all_data(self, content: Et.Element) -> pd.DataFrame:
         """
 
@@ -221,6 +245,7 @@ class OperatieParameters:
             return pd.DataFrame()
 
         df = pd.DataFrame(data=data, index=range(len(data)))
+        df = self.remove_common_prefix(df)
 
         return df
 
