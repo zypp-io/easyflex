@@ -3,6 +3,9 @@ from easyflex.exceptions import ServiceNotKnownError
 import requests
 import logging
 import pandas as pd
+import os
+from datetime import datetime
+from typing import Union
 
 
 class OperatieParameters:
@@ -120,6 +123,47 @@ class OperatieParameters:
 
         return ns, ns_txt
 
+    @staticmethod
+    def cast_datatypes(
+        kolomnaam: str, kolomwaarde: str, datatype: str
+    ) -> Union[int, float, datetime, str]:
+        """
+        Deze functie converteerd de kolomwaardes naar de juiste data types. De datatypes worden
+        in het xml attribuut benoemd. Omdat deze datatypes gekoppeld moeten worden aan de python
+        datatypes is deze functie geschreven.
+
+        Parameters
+        ----------
+        kolomnaam: str
+            kolomnaam van de record
+        kolomwaarde: str
+            kolomwaarde van de record
+        datatype: str
+            het datatype van de kolom
+
+        Returns
+        -------
+        kolomwaarde: Union[int, float, datetime, str]
+            de kolomwaarde, omgezet van tekst naar het juiste datatype
+        """
+
+        if datatype == "xsd:int":
+            kolomwaarde = int(kolomwaarde)
+        elif datatype == "xsd:float":
+            kolomwaarde = float(kolomwaarde)
+        elif datatype == "xsd:dateTime":
+            kolomwaarde = datetime.strptime(kolomwaarde, "%Y-%m-%dT%H:%M:%S")
+        elif datatype == "xsd:date":
+            kolomwaarde = datetime.strptime(kolomwaarde, "%Y-%m-%d")
+        elif datatype == "xsd:string":
+            kolomwaarde = str(kolomwaarde)
+        elif datatype is None:
+            return kolomwaarde
+        else:
+            logging.info(f"datatype {datatype} van veld {kolomnaam} niet gecast")
+
+        return kolomwaarde
+
     def parse_records(self, rec: Et.Element) -> dict:
         """
 
@@ -134,15 +178,42 @@ class OperatieParameters:
             dictionary met kolomnaam en kolominhoud van de record.
         """
 
-        kolomnaam, inhoud = list(), list()
+        kolomnamen, kolomwaarden = list(), list()
 
         for content in rec:
-            kolomnaam.append(content.tag.replace(self.ns_txt["urn"], ""))  # kolomnaam
-            inhoud.append(content.text)  # waarde van het veld
+            kolomnaam = content.tag.replace(self.ns_txt["urn"], "")
+            kolomnamen.append(kolomnaam)
+            kolomwaarde = content.text  # kolomwaarde uitgedrukt in tekst
+            datatype = content.attrib.get(f"{self.ns_txt.get('schema')}type")  # datatype vh veld
+            kolomwaarde = self.cast_datatypes(kolomnaam, kolomwaarde, datatype)  # pas kolomtype aan
+            kolomwaarden.append(kolomwaarde)
 
-        data = dict(zip(kolomnaam, inhoud))
+        data = dict(zip(kolomnamen, kolomwaarden))
 
         return data
+
+    @staticmethod
+    def remove_common_prefix(df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Deze functie zorgt ervoor dat de prefix van de kolomnamen wordt bepaald, en vervolgens
+        verwijderd. vaak is de prefix gelijk aan de modulenaam, bijvoorbeeld ds_wm_medewerkers.
+        Omdat dit niet altijd het geval is, bepalen we met os.path.commonprefix wat de prefix is.
+
+        Parameters
+        ----------
+        df: pd.DataFrame
+            dataset met oorspronkelijke kolomnamen
+
+        Returns
+        -------
+        df: pd.DataFrame
+            dataset met de nieuwe kolomnamen, zonder de overeenkomende voorvoegsel.
+        """
+
+        original_columns = df.columns.to_list()
+        df.columns = df.columns.str.replace(os.path.commonprefix(original_columns), "")
+
+        return df
 
     def parse_all_data(self, content: Et.Element) -> pd.DataFrame:
         """
@@ -174,6 +245,7 @@ class OperatieParameters:
             return pd.DataFrame()
 
         df = pd.DataFrame(data=data, index=range(len(data)))
+        df = self.remove_common_prefix(df)
 
         return df
 
