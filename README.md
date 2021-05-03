@@ -1,3 +1,5 @@
+<p align="center"><img alt="logo" src="https://www.zypp.io/static/assets/img/logos/zypp/black/250px.png" width="200"></p>
+
 # Easyflex dataservices API voor python
 > Dit project bevat python scripts voor het ontsluiten van data uit de easyflex API.
 
