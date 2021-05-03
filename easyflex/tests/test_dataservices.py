@@ -8,6 +8,13 @@ Test suite voor Easyflex dataservices
 """
 
 
+def test_ds_fw_loonjournaalposten():
+    api_keys = get_keyvault_secrets(keyvault_name="easyflex-tests")
+    ef = Easyflex(api_keys, service="dataservice")
+    data = ef.query(module="ds_fw_journaalposten", parameters={"jaar": 2021, "week": 2})
+    logging.info(f"end of test! imported {data.shape[0]} records")
+
+
 def test_ds_wm_medewerkers():
     api_keys = get_keyvault_secrets(keyvault_name="easyflex-tests")
     ef = Easyflex(api_keys, service="dataservice")
@@ -28,5 +35,6 @@ def test_ds_wm_locaties():
 
 
 if __name__ == "__main__":
+    test_ds_fw_loonjournaalposten()
     test_ds_wm_medewerkers()
     test_ds_wm_locaties()
