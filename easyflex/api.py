@@ -155,8 +155,12 @@ class OperatieParameters:
             kolomwaarde = datetime.strptime(kolomwaarde, "%Y-%m-%dT%H:%M:%S")
         elif datatype == "xsd:date":
             kolomwaarde = datetime.strptime(kolomwaarde, "%Y-%m-%d")
+        elif datatype == "xsd:boolean":
+            kolomwaarde = bool(kolomwaarde)
         elif datatype == "xsd:string":
             kolomwaarde = str(kolomwaarde)
+        elif datatype.find("Array") != -1:
+            return kolomwaarde
         elif datatype is None:
             return kolomwaarde
         else:
