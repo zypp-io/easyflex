@@ -375,5 +375,6 @@ class OperatieParameters:
         content = Et.fromstring(response.content.decode("utf-8")).find("ds:Body", self.ns)
         self.check_for_errors(content)
         df = self.parse_all_data(content)
+        df["werkmaatschappij_code"] = self.adm_code
 
         return df
