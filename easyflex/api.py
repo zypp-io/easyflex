@@ -16,9 +16,9 @@ class OperatieParameters:
         naam: str,
         parameters: dict,
         fields: list,
-        limit: int,
         runcount: int,
         service: str,
+        limit: int = 5000
     ):
         """
 
@@ -34,13 +34,13 @@ class OperatieParameters:
             parameters die horen bij de module
         fields: list
             veldnamen die uitgevraagd moeten worden
-        limit: int
-            het pagina limiet van de module. Deze staan genoemd in de Easyflex documentatie. Deze
-            is in de meeste gevallen 5000
         runcount: int
             De teller die het aantal verzoeken bijhoud. De eerste keer is deze 0
         service: str
             De dataservices die is gekozen
+        limit: int
+            het pagina limiet van de module. Deze staan genoemd in de Easyflex documentatie. Deze
+            is in de meeste gevallen 5000
         """
 
         self.api_key = api_key
