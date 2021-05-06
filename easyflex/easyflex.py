@@ -5,7 +5,6 @@ import logging
 from easyflex.api import OperatieParameters
 from easyflex.utils import create_dir
 from tqdm import tqdm
-from easyflex.exceptions import NoDataToImport
 
 
 class Easyflex:
@@ -71,7 +70,7 @@ class Easyflex:
         if all_pickles:
             data = pd.concat(all_pickles, axis=0, sort=False)
         else:
-            raise NoDataToImport("geen data beschikbaar.")
+            data = pd.DataFrame()
 
         return data
 
@@ -101,6 +100,7 @@ class Easyflex:
         administratie: str,
         parameters: dict = None,
         velden: list = None,
+        limit: int = 5000,
     ):
         """
 
@@ -113,6 +113,9 @@ class Easyflex:
         parameters: dict
             parameters voor het verzoek. De keys zijn veldnamen en de values zijn de filterwaarden.
         velden: list
+            lijst met velden die opgevraagd moeten worden. Als deze leeg is worden alle velden
+            uitgevraagd.
+        limit: int
             lijst met velden die opgevraagd moeten worden. Als deze leeg is worden alle velden
             uitgevraagd.
 
@@ -133,9 +136,9 @@ class Easyflex:
                 naam=module,
                 parameters=parameters,
                 fields=velden,
-                limit=5000,
                 runcount=runcount,
                 service=self.service,
+                limit=limit,
             )  # iedere request worden vanaf en totenmet parameters aangepast.
 
             df = operatie.post_request()
