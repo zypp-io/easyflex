@@ -151,6 +151,10 @@ class OperatieParameters:
             kolomwaarde = int(kolomwaarde)
         elif datatype == "xsd:float":
             kolomwaarde = float(kolomwaarde)
+        elif datatype == "xsd:long":
+            kolomwaarde = int(kolomwaarde)
+        elif datatype == "xsd:positiveInteger":
+            kolomwaarde = int(kolomwaarde)
         elif datatype == "xsd:dateTime":
             kolomwaarde = datetime.strptime(kolomwaarde, "%Y-%m-%dT%H:%M:%S")
         elif datatype == "xsd:date":
@@ -250,6 +254,7 @@ class OperatieParameters:
 
         df = pd.DataFrame(data=data, index=range(len(data)))
         df = self.remove_common_prefix(df)
+        df = df.convert_dtypes()  # convert to best possible dtypes
 
         return df
 
