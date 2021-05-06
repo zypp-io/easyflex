@@ -18,7 +18,7 @@ class OperatieParameters:
         fields: list,
         runcount: int,
         service: str,
-        limit: int = 5000
+        limit: int = 5000,
     ):
         """
 
