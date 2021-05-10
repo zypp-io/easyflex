@@ -292,7 +292,7 @@ class OperatieParameters:
 
         df = pd.DataFrame(data=data, index=range(len(data)))
         df = self.remove_common_prefix(df)
-        df = df.convert_dtypes()  # convert to best possible dtypes
+        # df = df.convert_dtypes()  # convert to best possible dtypes
 
         return df
 
