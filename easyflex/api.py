@@ -19,6 +19,7 @@ class OperatieParameters:
         runcount: int,
         service: str,
         limit: int = 5000,
+        inherit_datatypes=True,
     ):
         """
 
@@ -50,6 +51,7 @@ class OperatieParameters:
         self.limit = limit
         self.parameters = self.create_parameters(parameters)  # vanaf en totenmet parameters
         self.fields = fields
+        self.inherit_datatypes = inherit_datatypes
 
         self.headers = {"content-type": "text/xml"}
 
@@ -172,6 +174,34 @@ class OperatieParameters:
 
         return kolomwaarde
 
+    def parse_array(self, items: Et.SubElement):
+        """
+        Soms zit er een array met informatie bijgevoegd, op 1 record van de response. Omdat we voor
+        iedere module van de dataservices willen zorgen dat 1 record ook 1 record blijft, worden de
+        arrays nu als list met dictionaries toegevoegd aan 1 cel van de dataframe.
+
+        Parameters
+        ----------
+        items: Et.SubElement
+            Et.SubElement waar de array in staat. Deze lijst bevat alle informatie van de array
+
+        Returns
+        -------
+
+        """
+
+        all_data = []  # lijst waar de waardes in worden gezet
+        for item in items:  # iterate over alle elementen in de array
+
+            information = dict()  # maak een dictionary aan voor iedere item in de array
+
+            for x in item:  # zorg dat ieder item wordt opgeslagen in de dictionary
+                information[x.tag.replace(self.ns_txt.get("urn"), "")] = x.text
+
+            all_data.append(information)  # append de dictionary aan de dataset
+
+        return all_data
+
     def parse_records(self, rec: Et.Element) -> dict:
         """
 
@@ -189,11 +219,23 @@ class OperatieParameters:
         kolomnamen, kolomwaarden = list(), list()
 
         for content in rec:
-            kolomnaam = content.tag.replace(self.ns_txt["urn"], "")
+            array_data = [x for x in content.attrib.values() if x.find("Array") != -1]
+            if array_data:  # array data wordt anders behandeld, zie docstring parse_array.
+                kolomwaarde = self.parse_array(content)
+                kolomnaam = content.tag.replace(self.ns_txt["urn"], "")
+            else:
+                kolomwaarde = content.text  # kolomwaarde uitgedrukt in tekst
+                kolomnaam = content.tag.replace(self.ns_txt["urn"], "")
+
+                if self.inherit_datatypes:
+                    datatype = content.attrib.get(
+                        f"{self.ns_txt.get('schema')}type"
+                    )  # datatype vh veld
+                    kolomwaarde = self.cast_datatypes(
+                        kolomnaam, kolomwaarde, datatype
+                    )  # pas kolomtype aan
+
             kolomnamen.append(kolomnaam)
-            kolomwaarde = content.text  # kolomwaarde uitgedrukt in tekst
-            datatype = content.attrib.get(f"{self.ns_txt.get('schema')}type")  # datatype vh veld
-            kolomwaarde = self.cast_datatypes(kolomnaam, kolomwaarde, datatype)  # pas kolomtype aan
             kolomwaarden.append(kolomwaarde)
 
         data = dict(zip(kolomnamen, kolomwaarden))
@@ -254,7 +296,7 @@ class OperatieParameters:
 
         df = pd.DataFrame(data=data, index=range(len(data)))
         df = self.remove_common_prefix(df)
-        df = df.convert_dtypes()  # convert to best possible dtypes
+        # df = df.convert_dtypes()  # convert to best possible dtypes
 
         return df
 

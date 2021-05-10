@@ -1,6 +1,8 @@
-from easyflex import Easyflex
 import logging
+
 from keyvault import get_keyvault_secrets
+
+from easyflex import Easyflex
 
 """
 Test suite voor Easyflex dataservices
@@ -22,6 +24,21 @@ def test_ds_wm_medewerkers():
     logging.info(f"end of test! imported {data.shape[0]} records")
 
 
+def test_ds_fw_persoonsgegevens_memovelden():
+    api_keys = get_keyvault_secrets(keyvault_name="easyflex-tests")
+    ef = Easyflex(api_keys, service="dataservice")
+    data = ef.query(
+        module="ds_fw_persoonsgegevens_all",
+        parameters={"memorubrieken": "true", "registratienummer": "5477778"},
+        velden=[
+            "fw_persoonsgegevens_all_registratienummer",
+            "fw_persoonsgegevens_all_achternaam",
+            "fw_persoonsgegevens_all_memorubrieken",
+        ],
+    )
+    logging.info(f"end of test! imported {data.shape[0]} records")
+
+
 def test_ds_wm_locaties():
     api_keys = get_keyvault_secrets(keyvault_name="easyflex-tests")
     ef = Easyflex(api_keys, service="dataservice")
@@ -35,6 +52,7 @@ def test_ds_wm_locaties():
 
 
 if __name__ == "__main__":
+    test_ds_fw_persoonsgegevens_memovelden()
     test_ds_fw_loonjournaalposten()
     test_ds_wm_medewerkers()
     test_ds_wm_locaties()
