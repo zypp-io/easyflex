@@ -19,6 +19,7 @@ class OperatieParameters:
         runcount: int,
         service: str,
         limit: int = 5000,
+        inherit_datatypes=True,
     ):
         """
 
@@ -50,6 +51,7 @@ class OperatieParameters:
         self.limit = limit
         self.parameters = self.create_parameters(parameters)  # vanaf en totenmet parameters
         self.fields = fields
+        self.inherit_datatypes = inherit_datatypes
 
         self.headers = {"content-type": "text/xml"}
 
@@ -224,12 +226,14 @@ class OperatieParameters:
             else:
                 kolomwaarde = content.text  # kolomwaarde uitgedrukt in tekst
                 kolomnaam = content.tag.replace(self.ns_txt["urn"], "")
-                datatype = content.attrib.get(
-                    f"{self.ns_txt.get('schema')}type"
-                )  # datatype vh veld
-                kolomwaarde = self.cast_datatypes(
-                    kolomnaam, kolomwaarde, datatype
-                )  # pas kolomtype aan
+
+                if self.inherit_datatypes:
+                    datatype = content.attrib.get(
+                        f"{self.ns_txt.get('schema')}type"
+                    )  # datatype vh veld
+                    kolomwaarde = self.cast_datatypes(
+                        kolomnaam, kolomwaarde, datatype
+                    )  # pas kolomtype aan
 
             kolomnamen.append(kolomnaam)
             kolomwaarden.append(kolomwaarde)
