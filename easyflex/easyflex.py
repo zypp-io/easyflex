@@ -185,5 +185,6 @@ class Easyflex:
             self.request_data(module, administratie, parameters, velden)
 
         df = self.cat_modules(module)
+        self.directory.cleanup()
 
         return df
