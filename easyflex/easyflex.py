@@ -1,9 +1,6 @@
-import tempfile
 import pandas as pd
-import os
 import logging
 from easyflex.api import OperatieParameters
-from easyflex.utils import create_dir
 from tqdm import tqdm
 
 
@@ -25,74 +22,7 @@ class Easyflex:
         logging.info(f"{len(api_keys)} administraties geselecteerd.")
         self.api_keys = api_keys
         self.administraties = api_keys.keys()
-        self.directory = self.set_directories()
         self.service = service
-
-    @staticmethod
-    def set_directories() -> tempfile.TemporaryDirectory:
-        """
-
-        Returns
-        -------
-        directory: tempfile.TemporaryDirectory
-            de temp directory die is aangemaakt voor het opslaan van tijdelijke bestanden.
-        """
-        directory = tempfile.TemporaryDirectory(suffix="_easyflex")
-        folders = ["pickles"]
-        for folder in folders:
-            create_dir(os.path.join(directory.name, folder))
-
-        return directory
-
-    def cat_modules(self, module: str) -> pd.DataFrame:
-        """
-
-        Parameters
-        ----------
-        module: str
-            De naam van de module, bijvoorbeeld ds_wm_medewerkers.
-
-        Returns
-        -------
-        data: pd.DataFrame
-            dataset met alle geimporteerde data van alle werkmaatschappijen.
-        """
-
-        all_pickles = list()
-        pickle_dir = os.path.join(self.directory.name, "pickles")
-        files = [x for x in os.listdir(pickle_dir) if x.find(module) != -1]
-
-        for file in files:
-            filepath = os.path.join(pickle_dir, file)
-            df = pd.read_pickle(filepath)
-            all_pickles.append(df)
-
-        if all_pickles:
-            data = pd.concat(all_pickles, axis=0, sort=False)
-        else:
-            data = pd.DataFrame()
-
-        return data
-
-    def export_module(self, operatie: OperatieParameters, data: pd.DataFrame) -> None:
-        """
-
-        Parameters
-        ----------
-        operatie: OperatieParameters
-            De class met de Operatie parameters. Zie documentatie van OperatieParameters.
-        data: pd.DataFrame
-            dataframe met de informatie van 1 administratie. Deze dataset worden voor ieder
-            afzonderlijk verzoek opgeslagen in een tijdelijk .pkl bestand.
-
-        Returns
-        -------
-        None
-        """
-
-        filename = f"{operatie.adm_code}_{operatie.naam}.pkl"
-        data.to_pickle(os.path.join(self.directory.name, "pickles", filename))
-        logging.debug("{} geexporteerd! ({} records)".format(filename, len(data)))
 
     def request_data(
         self,
@@ -150,8 +80,7 @@ class Easyflex:
 
         data = pd.concat(data_list, axis=0, sort=False, ignore_index=True)
 
-        if not data.empty:  # exporteer de dataset naar een pickle bestand.
-            self.export_module(operatie, data)  # noqa
+        return data
 
     def query(
         self,
@@ -179,12 +108,11 @@ class Easyflex:
 
         """
 
-        # self.directory.cleanup()
+        data_list = []
 
         for administratie in tqdm(self.administraties, desc=f"importing {module}"):
-            self.request_data(module, administratie, parameters, velden)
+            df = self.request_data(module, administratie, parameters, velden)
+            data_list.append(df)
+        data = pd.concat(data_list, axis=0, sort=False, ignore_index=True)
 
-        df = self.cat_modules(module)
-        self.directory.cleanup()
-
-        return df
+        return data
