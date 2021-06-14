@@ -31,6 +31,7 @@ class Easyflex:
         parameters: dict = None,
         velden: list = None,
         max_rows: int = 5000,
+        inherit_datatypes: bool = True,
     ):
         """
 
@@ -47,6 +48,9 @@ class Easyflex:
             uitgevraagd.
         max_rows: int
            maximale aantal rijen dat kan worden uitgevraagd. Default = 5000
+        inherit_datatypes: bool
+           default = True. geeft aan of de datatypes van de Easyflex dataservices worden aangehouden
+           Als deze op False staat, worden geen datatypes omgezet (alles string).
 
         Returns
         -------
@@ -68,6 +72,7 @@ class Easyflex:
                 runcount=runcount,
                 service=self.service,
                 max_rows=max_rows,
+                inherit_datatypes=inherit_datatypes,
             )  # iedere request worden vanaf en totenmet parameters aangepast.
 
             df = operatie.post_request()
@@ -87,6 +92,7 @@ class Easyflex:
         parameters: dict = None,
         velden: list = None,
         max_rows: int = 5000,
+        inherit_datatypes: bool = True,
     ) -> pd.DataFrame:
         """
         De query functie bevraagt de easyflex API op basis van de gekozen module.
@@ -102,6 +108,9 @@ class Easyflex:
             lijst met velden die uitgevraagd moeten worden.
         max_rows: int
             het aantal records dat per keer uitgevraagd kan worden voor de module.
+        inherit_datatypes: bool
+           default = True. geeft aan of de datatypes van de Easyflex dataservices worden aangehouden
+           Als deze op False staat, worden geen datatypes omgezet (alles string).
 
         Returns
         -------
@@ -113,7 +122,9 @@ class Easyflex:
         data_list = []
 
         for administratie in tqdm(self.administraties, desc=f"importing {module}"):
-            df = self.request_data(module, administratie, parameters, velden, max_rows)
+            df = self.request_data(
+                module, administratie, parameters, velden, max_rows, inherit_datatypes
+            )
             data_list.append(df)
         data = pd.concat(data_list, axis=0, sort=False, ignore_index=True)
 

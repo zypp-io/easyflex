@@ -163,6 +163,8 @@ class OperatieParameters:
             kolomwaarde = datetime.strptime(kolomwaarde, "%Y-%m-%d")
         elif datatype == "xsd:time":
             kolomwaarde = str(kolomwaarde)
+        elif datatype == "xsd:base64Binary":
+            kolomwaarde = str(kolomwaarde)
         elif datatype == "xsd:boolean":
             kolomwaarde = bool(kolomwaarde)
         elif datatype == "xsd:string":
