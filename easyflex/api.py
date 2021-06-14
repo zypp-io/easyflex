@@ -18,7 +18,7 @@ class OperatieParameters:
         fields: list,
         runcount: int,
         service: str,
-        limit: int = 5000,
+        max_rows: int = 5000,
         inherit_datatypes=True,
     ):
         """
@@ -39,7 +39,7 @@ class OperatieParameters:
             De teller die het aantal verzoeken bijhoud. De eerste keer is deze 0
         service: str
             De dataservices die is gekozen
-        limit: int
+        max_rows: int
             het pagina limiet van de module. Deze staan genoemd in de Easyflex documentatie. Deze
             is in de meeste gevallen 5000
         """
@@ -48,7 +48,7 @@ class OperatieParameters:
         self.adm_code = adm_code
         self.naam = naam
         self.runcount = runcount
-        self.limit = limit
+        self.max_rows = max_rows
         self.parameters = self.create_parameters(parameters)  # vanaf en totenmet parameters
         self.fields = fields
         self.inherit_datatypes = inherit_datatypes
@@ -79,8 +79,8 @@ class OperatieParameters:
         """
 
         additional_params = dict()
-        additional_params["vanaf"] = 1 + (self.limit * self.runcount)
-        additional_params["totenmet"] = self.limit + (self.limit * self.runcount)
+        additional_params["vanaf"] = 1 + (self.max_rows * self.runcount)
+        additional_params["totenmet"] = self.max_rows + (self.max_rows * self.runcount)
 
         return additional_params
 

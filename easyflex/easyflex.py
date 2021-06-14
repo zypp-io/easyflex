@@ -30,7 +30,7 @@ class Easyflex:
         administratie: str,
         parameters: dict = None,
         velden: list = None,
-        limit: int = 5000,
+        max_rows: int = 5000,
     ):
         """
 
@@ -45,9 +45,8 @@ class Easyflex:
         velden: list
             lijst met velden die opgevraagd moeten worden. Als deze leeg is worden alle velden
             uitgevraagd.
-        limit: int
-            lijst met velden die opgevraagd moeten worden. Als deze leeg is worden alle velden
-            uitgevraagd.
+        max_rows: int
+           maximale aantal rijen dat kan worden uitgevraagd. Default = 5000
 
         Returns
         -------
@@ -68,13 +67,13 @@ class Easyflex:
                 fields=velden,
                 runcount=runcount,
                 service=self.service,
-                limit=limit,
+                max_rows=max_rows,
             )  # iedere request worden vanaf en totenmet parameters aangepast.
 
             df = operatie.post_request()
             data_list.append(df)
 
-            if not len(df) == operatie.limit:  # als de dataset < max aantal regels dan stoppen.
+            if not len(df) == operatie.max_rows:  # als de dataset < max aantal regels dan stoppen.
                 run = False
             runcount += 1
 
@@ -87,6 +86,7 @@ class Easyflex:
         module: str,
         parameters: dict = None,
         velden: list = None,
+        max_rows: int = 5000,
     ) -> pd.DataFrame:
         """
         De query functie bevraagt de easyflex API op basis van de gekozen module.
@@ -100,6 +100,8 @@ class Easyflex:
             dictionary met parameters voor de specifiek gekozen module.
         velden: list
             lijst met velden die uitgevraagd moeten worden.
+        max_rows: int
+            het aantal records dat per keer uitgevraagd kan worden voor de module.
 
         Returns
         -------
@@ -111,7 +113,7 @@ class Easyflex:
         data_list = []
 
         for administratie in tqdm(self.administraties, desc=f"importing {module}"):
-            df = self.request_data(module, administratie, parameters, velden)
+            df = self.request_data(module, administratie, parameters, velden, max_rows)
             data_list.append(df)
         data = pd.concat(data_list, axis=0, sort=False, ignore_index=True)
 
