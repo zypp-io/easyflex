@@ -304,7 +304,7 @@ class OperatieParameters:
 
         return df
 
-    def check_for_errors(self, content: Et.Element) -> None:
+    def parse_errors(self, content: Et.Element) -> pd.DataFrame:
         """
 
         Parameters
@@ -314,13 +314,18 @@ class OperatieParameters:
 
         Returns
         -------
-        None
-        Deze functie geeft een warning wanneer er een foutbericht van Easyflex is gekomen.
+        fault_df: pd.DataFrame
+            Deze functie geeft een dataframe terug met fout gegevens.
         """
 
         fault = content.find("ds:Fault/detail/detail", self.ns)
         if fault is not None:
             logging.warning("foutcode van easyflex server: {}".format(fault.text))
+            fault_df = pd.DataFrame([{**self.parameters, **{"foutcode": fault.text}}])
+        else:
+            fault_df = pd.DataFrame()
+
+        return fault_df
 
     def add_fields(self, topelement: Et.Element) -> None:
         """
@@ -428,7 +433,10 @@ class OperatieParameters:
         xml_request = self.build_soap_request()
         response = requests.post(url=self.endpoint, data=xml_request, headers=self.headers)
         content = Et.fromstring(response.content.decode("utf-8")).find("ds:Body", self.ns)
-        self.check_for_errors(content)
+        errors = self.parse_errors(content)
+        if not errors.empty:
+            return errors
+
         df = self.parse_all_data(content)
         df["werkmaatschappij_code"] = self.adm_code
 
