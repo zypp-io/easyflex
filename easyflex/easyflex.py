@@ -92,7 +92,7 @@ class Easyflex:
         parameters: dict = None,
         velden: list = None,
         max_rows: int = 5000,
-        inherit_datatypes: bool = True,
+        inherit_datatypes: bool = False,
     ) -> pd.DataFrame:
         """
         De query functie bevraagt de easyflex API op basis van de gekozen module.
