@@ -320,7 +320,7 @@ class OperatieParameters:
 
         fault = content.find("ds:Fault/detail/detail", self.ns)
         if fault is not None:
-            logging.warning("foutcode van easyflex server: {}".format(fault.text))
+            logging.warning(f"{self.adm_code}: foutcode van easyflex server: {fault.text}")
             fault_df = pd.DataFrame([{**self.parameters, **{"foutcode": fault.text}}])
         else:
             fault_df = pd.DataFrame()
