@@ -1,7 +1,9 @@
-import pandas as pd
 import logging
-from easyflex.api import OperatieParameters
+
+import pandas as pd
 from tqdm import tqdm
+
+from easyflex.api import OperatieParameters
 
 
 class Easyflex:
@@ -122,9 +124,7 @@ class Easyflex:
         data_list = []
 
         for administratie in tqdm(self.administraties, desc=f"importing {module}"):
-            df = self.request_data(
-                module, administratie, parameters, velden, max_rows, inherit_datatypes
-            )
+            df = self.request_data(module, administratie, parameters, velden, max_rows, inherit_datatypes)
             data_list.append(df)
         data = pd.concat(data_list, axis=0, sort=False, ignore_index=True)
 
