@@ -1,11 +1,13 @@
-from xml.etree import ElementTree as Et
-from easyflex.exceptions import ServiceNotKnownError
-import requests
 import logging
-import pandas as pd
 import os
 from datetime import datetime
 from typing import Union
+from xml.etree import ElementTree as Et
+
+import pandas as pd
+import requests
+
+from easyflex.exceptions import ServiceNotKnownError
 
 
 class OperatieParameters:
@@ -126,9 +128,7 @@ class OperatieParameters:
         return ns, ns_txt
 
     @staticmethod
-    def cast_datatypes(
-        kolomnaam: str, kolomwaarde: str, datatype: str
-    ) -> Union[int, float, datetime, str]:
+    def cast_datatypes(kolomnaam: str, kolomwaarde: str, datatype: str) -> Union[int, float, datetime, str]:
         """
         Deze functie converteerd de kolomwaardes naar de juiste data types. De datatypes worden
         in het xml attribuut benoemd. Omdat deze datatypes gekoppeld moeten worden aan de python
@@ -232,12 +232,8 @@ class OperatieParameters:
                 kolomnaam = content.tag.replace(self.ns_txt["urn"], "")
 
                 if self.inherit_datatypes:
-                    datatype = content.attrib.get(
-                        f"{self.ns_txt.get('schema')}type"
-                    )  # datatype vh veld
-                    kolomwaarde = self.cast_datatypes(
-                        kolomnaam, kolomwaarde, datatype
-                    )  # pas kolomtype aan
+                    datatype = content.attrib.get(f"{self.ns_txt.get('schema')}type")  # datatype vh veld
+                    kolomwaarde = self.cast_datatypes(kolomnaam, kolomwaarde, datatype)  # pas kolomtype aan
 
             kolomnamen.append(kolomnaam)
             kolomwaarden.append(kolomwaarde)
