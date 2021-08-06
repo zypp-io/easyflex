@@ -1,4 +1,9 @@
 <p align="center"><img alt="logo" src="https://www.zypp.io/static/assets/img/logos/zypp/black/500px.png" width="200"></p>
+<br>
+
+[![Downloads](https://pepy.tech/badge/easyflex)](https://pepy.tech/project/easyflex)
+![PyPI](https://img.shields.io/pypi/v/easyflex)
+[![Open Source](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://opensource.org/)
 
 # Easyflex dataservices API voor python
 > Dit project bevat python scripts voor het ontsluiten van data uit de easyflex API.
