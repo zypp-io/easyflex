@@ -24,6 +24,19 @@ def test_ds_wm_medewerkers():
     logging.info(f"end of test! imported {data.shape[0]} records")
 
 
+def test_ds_rf_declaratie_regels():
+
+    api_keys = get_keyvault_secrets(keyvault_name="easyflex-tests")
+    ef = Easyflex(api_keys, service="dataservice")
+
+    data = ef.query(
+        "ds_rf_declaratie_regels",
+        parameters={"rf_decl_plaatsingnummer": "8174729", "rf_decl_idnrs": [{"rf_decl_idnr": "258174536"}]},
+    )
+
+    logging.info(f"end of test! imported {data.shape[0]} records")
+
+
 def test_ds_fw_persoonsgegevens_memovelden():
     api_keys = get_keyvault_secrets(keyvault_name="easyflex-tests")
     ef = Easyflex(api_keys, service="dataservice")
@@ -52,7 +65,8 @@ def test_ds_wm_locaties():
 
 
 if __name__ == "__main__":
-    test_ds_fw_persoonsgegevens_memovelden()
-    test_ds_fw_loonjournaalposten()
-    test_ds_wm_medewerkers()
-    test_ds_wm_locaties()
+    # test_ds_fw_persoonsgegevens_memovelden()
+    # test_ds_fw_loonjournaalposten()
+    # test_ds_wm_medewerkers()
+    # test_ds_wm_locaties()
+    test_ds_rf_declaratie_regels()

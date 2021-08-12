@@ -343,6 +343,41 @@ class OperatieParameters:
             for field in self.fields:
                 Et.SubElement(fields_xml, f"urn:{field}")
 
+    @staticmethod
+    def add_array(parameter: Et.SubElement, items: list):
+        """
+        add_array kan gebruikt worden om arrays toe te voegen aan de soap requests.
+        De arrays moeten in de vorm van items worden aangeboden. Deze items moeten aan de xml laag worden toegevoegd.
+        Het is belangrijk dat de opbouw van de parameter in de vorm van een dictionary is. Zie voorbeeld.
+
+        voorbeeld van correcte vorm van het 'parameters' argument in de functie query():
+        parameters = {"rf_declidnrs": [{"rf_decl_idnr": "258176109"}]}
+
+        Parameters
+        ----------
+        parameter: Et.SubElement
+            Et element van de array.
+        items: list
+            lijst met dictionaries die de items vormen in de request.
+
+        Returns
+        -------
+
+        """
+
+        for item in items:
+
+            # iedere item krijgt zijn eigen subelement 'item'
+            item_xml = Et.SubElement(parameter, "item")
+
+            if type(item) != dict:
+                logging.error("Array moet in de vorm van dictionary zijn.")
+
+            for item_name, item_value in item.items():
+                # vervolgens worden hier subelementen aantoegevoegd die in de dictionary zijn opgenomen.
+                array_item_xml = Et.SubElement(item_xml, item_name)
+                array_item_xml.text = item_value
+
     def add_parameters(self, topelement: Et.Element) -> None:
         """
 
@@ -361,7 +396,10 @@ class OperatieParameters:
         if self.parameters is not None:
             for name, value in self.parameters.items():
                 parameter = Et.SubElement(parameters_xml, name)
-                parameter.text = str(value)
+                if type(value) == list:
+                    self.add_array(parameter, items=value)
+                else:
+                    parameter.text = str(value)
 
     def add_body(self, topelement: Et.Element) -> Et.SubElement:
         """
