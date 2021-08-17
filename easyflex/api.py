@@ -291,7 +291,7 @@ class OperatieParameters:
 
         if not len(data):
             return pd.DataFrame()
-        if data[0] == dict():
+        if isinstance(data[0], dict):
             return pd.DataFrame()
 
         df = pd.DataFrame(data=data, index=range(len(data)))
@@ -370,7 +370,7 @@ class OperatieParameters:
             # iedere item krijgt zijn eigen subelement 'item'
             item_xml = Et.SubElement(parameter, "item")
 
-            if type(item) != dict:
+            if not isinstance(item, dict):
                 logging.error("Array moet in de vorm van dictionary zijn.")
 
             for item_name, item_value in item.items():
@@ -396,7 +396,7 @@ class OperatieParameters:
         if self.parameters is not None:
             for name, value in self.parameters.items():
                 parameter = Et.SubElement(parameters_xml, name)
-                if type(value) == list:
+                if isinstance(value, list):
                     self.add_array(parameter, items=value)
                 else:
                     parameter.text = str(value)
