@@ -2,6 +2,10 @@
 
 Alle wijzigingen in dit project worden hier gedocumenteerd.
 
+## 0.0.19 - 2021-08-17
+
+Set requirements version to specific value
+
 ## 0.0.18 - 2021-08-12
 
 - Toevoegen van array ondersteuning aan parameters argument.Wanneer een list aan dictionaries wordt opgegeven in de value van de parameter, zullen deze items als array worden toegevoegd aan de request. Dit is noodzakelijk voor bijvoorbeeld veld rf_decl_idnrs in module ds_rf_declaratie_regels
