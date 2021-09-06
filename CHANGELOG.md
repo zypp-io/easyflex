@@ -2,9 +2,13 @@
 
 Alle wijzigingen in dit project worden hier gedocumenteerd.
 
+## 0.0.20 - 2021-09-06
+
+- Fix bug where we check for empty dict instead of dict type
+
 ## 0.0.19 - 2021-08-17
 
-Set requirements version to specific value
+- Set requirements version to specific value
 
 ## 0.0.18 - 2021-08-12
 
