@@ -291,7 +291,7 @@ class OperatieParameters:
 
         if not len(data):
             return pd.DataFrame()
-        if isinstance(data[0], dict):
+        if data[0] == dict():
             return pd.DataFrame()
 
         df = pd.DataFrame(data=data, index=range(len(data)))
