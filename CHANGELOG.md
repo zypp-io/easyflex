@@ -2,6 +2,11 @@
 
 Alle wijzigingen in dit project worden hier gedocumenteerd.
 
+## 0.0.21 - 2021-11-03
+
+- Fix bug where latin1 characters are not properly encoded
+- added test for inserting latin1 characters (e.g. Umlaut)
+
 ## 0.0.20 - 2021-09-06
 
 - Fix bug where we check for empty dict instead of dict type
