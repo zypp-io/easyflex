@@ -55,7 +55,7 @@ class OperatieParameters:
         self.fields = fields
         self.inherit_datatypes = inherit_datatypes
 
-        self.headers = {"content-type": "text/xml"}
+        self.headers = {"content-type": "text/xml", "charset": "utf8"}
 
         # afhankelijk van de service worden de endpoints en namespaces bepaald.
         if service == "webservice":
@@ -451,7 +451,7 @@ class OperatieParameters:
         self.add_parameters(body)
         self.add_fields(body)
 
-        xml_request_str = Et.tostring(xml_request).decode("utf-8")
+        xml_request_str = Et.tostring(xml_request, encoding="utf8")
 
         return xml_request_str
 
@@ -466,7 +466,7 @@ class OperatieParameters:
 
         xml_request = self.build_soap_request()
         response = requests.post(url=self.endpoint, data=xml_request, headers=self.headers)
-        content = Et.fromstring(response.content.decode("utf-8")).find("ds:Body", self.ns)
+        content = Et.fromstring(response.content.decode("utf8")).find("ds:Body", self.ns)
         errors = self.parse_errors(content)
         if not errors.empty:
             return errors

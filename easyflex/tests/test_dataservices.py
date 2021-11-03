@@ -25,7 +25,6 @@ def test_ds_wm_medewerkers():
 
 
 def test_ds_rf_declaratie_regels():
-
     api_keys = get_keyvault_secrets(keyvault_name="easyflex-tests")
     ef = Easyflex(api_keys, service="dataservice")
 
@@ -64,9 +63,72 @@ def test_ds_wm_locaties():
     logging.info(f"end of test! imported {data.shape[0]} records")
 
 
+def test_ds_fw_persoonsgegevens_update():
+    api_keys = get_keyvault_secrets(keyvault_name="staffing-easyflex-test")
+    api_keys = {"9036": api_keys.get("9036")}
+    ef = Easyflex(api_keys, service="dataservice")
+    data = ef.query(
+        module="ds_fw_persoonsgegevens_update",
+        parameters={
+            "voornaam": "Ötzi",
+            "achternaam": "Önderhetîjs",
+            "inschrijver": "28694",
+            "relatiebeheerder": "28694",
+            "locatie": "4846",
+            "voorletters": "O",
+            "geslacht": "20092",
+            "plaats": "Oosterhout",
+            "straat": "Steentijd",
+            "huisnummer": "10",
+            "land": "NL",
+            "woonplaats": "Oosterhout",
+            "woonstraat": "Steentijd",
+            "woonhuisnummer": "10",
+            "woonland": "NL",
+            "woonpostcode": "4911BJ",
+            "postcode": "4911BJ",
+            "versie": "Easyflex test",
+            "registratienummer": "6201913",
+            "communicatie": [
+                {
+                    "commvolgnr": "0",
+                    "commtype": "20016",
+                    "commwaarde": "0612345678",
+                    "commpersoonlijk": "0",
+                    "commcollectief": "0",
+                }
+            ],
+        },
+    )
+
+    logging.info(f"end of test! imported {data.shape[0]} records")
+
+    return data
+
+
+def test_ds_fw_persoonsgegevens():
+    api_keys = get_keyvault_secrets(keyvault_name="staffing-easyflex-test")
+    api_keys = {"9036": api_keys.get("9036")}
+    ef = Easyflex(api_keys, service="dataservice")
+    data = ef.query(module="ds_fw_persoonsgegevens", parameters={"registratienummer": "6201913"})
+
+    logging.info(f"end of test! imported {data.shape[0]} records")
+
+    return data
+
+
+def test_ascii():
+    test_ds_fw_persoonsgegevens_update()
+    read = test_ds_fw_persoonsgegevens()
+
+    assert read.iloc[0]["voornaam"] == "Ötzi"
+    assert read.iloc[0]["achternaam"] == "Önderhetîjs"
+
+
 if __name__ == "__main__":
-    # test_ds_fw_persoonsgegevens_memovelden()
-    # test_ds_fw_loonjournaalposten()
-    # test_ds_wm_medewerkers()
-    # test_ds_wm_locaties()
+    test_ds_fw_persoonsgegevens_memovelden()
+    test_ds_fw_loonjournaalposten()
+    test_ds_wm_medewerkers()
+    test_ds_wm_locaties()
     test_ds_rf_declaratie_regels()
+    test_ascii()
