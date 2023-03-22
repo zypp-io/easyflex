@@ -95,7 +95,7 @@ class Easyflex:
         velden: list = None,
         max_rows: int = 5000,
         inherit_datatypes: bool = False,
-        disable: bool = False,
+        no_pbar: bool = False,
     ) -> pd.DataFrame:
         """
         De query functie bevraagt de easyflex API op basis van de gekozen module.
@@ -114,7 +114,7 @@ class Easyflex:
         inherit_datatypes: bool
            default = True. geeft aan of de datatypes van de Easyflex dataservices worden aangehouden
            Als deze op False staat, worden geen datatypes omgezet (alles string).
-        disable  : bool, optional
+        no_pbar  : bool, optional
             Whether to disable the entire progressbar wrapper
             [default: False].
 
@@ -127,7 +127,7 @@ class Easyflex:
 
         data_list = []
 
-        for administratie in tqdm(self.administraties, desc=f"importing {module}", disable=disable):
+        for administratie in tqdm(self.administraties, desc=f"importing {module}", disable=no_pbar):
             df = self.request_data(module, administratie, parameters, velden, max_rows, inherit_datatypes)
             data_list.append(df)
         data = pd.concat(data_list, axis=0, sort=False, ignore_index=True)
