@@ -7,7 +7,7 @@ from easyflex.api import OperatieParameters
 
 
 class Easyflex:
-    def __init__(self, api_keys: dict, service: str = "dataservice"):
+    def __init__(self, api_keys: dict, service: str = "dataservice", sandbox: bool = False):
         """
         Deze class betrekt zich tot het authenticeren met de Easyflex API. bij het initialiseren van
         deze class worden de API keys vastgezet voor de latere uitvragen.
@@ -19,12 +19,15 @@ class Easyflex:
         service: str
             dataservice of webservice. De service bepaald naar welke endpoints de verzoeken
             worden verstuurd.
+        sandbox: bool
+            default = False. Als deze op True staat, worden de verzoeken naar de sandbox omgeving gestuurd
         """
 
         logging.info(f"{len(api_keys)} administraties geselecteerd.")
         self.api_keys = api_keys
         self.administraties = api_keys.keys()
         self.service = service
+        self.sandbox = sandbox
 
     def request_data(
         self,
@@ -73,6 +76,7 @@ class Easyflex:
                 fields=velden,
                 runcount=runcount,
                 service=self.service,
+                sandbox=self.sandbox,
                 max_rows=max_rows,
                 inherit_datatypes=inherit_datatypes,
             )  # iedere request worden vanaf en totenmet parameters aangepast.
