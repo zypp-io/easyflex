@@ -20,6 +20,7 @@ class OperatieParameters:
         fields: list,
         runcount: int,
         service: str,
+        sandbox: bool,
         max_rows: int = 5000,
         inherit_datatypes=True,
     ):
@@ -41,6 +42,8 @@ class OperatieParameters:
             De teller die het aantal verzoeken bijhoud. De eerste keer is deze 0
         service: str
             De dataservices die is gekozen
+        sandbox: bool
+            Of de sandbox omgeving van EF gebruikt moet worden. Default = False
         max_rows: int
             het pagina limiet van de module. Deze staan genoemd in de Easyflex documentatie. Deze
             is in de meeste gevallen 5000
@@ -56,13 +59,14 @@ class OperatieParameters:
         self.inherit_datatypes = inherit_datatypes
 
         self.headers = {"content-type": "text/xml", "charset": "utf8"}
-
+        # Bepaal suburl voor sandbox of productie omgeving van EF (zie EF API docs voor details)
+        sub_url = "sandbox" if sandbox else "www"
         # afhankelijk van de service worden de endpoints en namespaces bepaald.
         if service == "webservice":
-            self.endpoint = "https://www.easyflex.net/webservice/"
+            self.endpoint = f"https://{sub_url}.easyflex.net/webservice/"
             self.urn = "EfWebservice"
         elif service == "dataservice":
-            self.endpoint = "https://www.easyflex.net/dataservice/"
+            self.endpoint = f"https://{sub_url}.easyflex.net/dataservice/"
             self.urn = "EfDataService"
         else:
             raise ServiceNotKnownError("service niet bekend. Kies uit dataservice of webservice")
