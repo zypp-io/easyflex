@@ -44,4 +44,4 @@ data = ef.query(module="ds_wm_locaties",
 
 ## Onderhouden door:
 
-- [Melvin Folkers - Zypp](https://github.com/zypp-io)
+- [Zypp](https://github.com/zypp-io)
