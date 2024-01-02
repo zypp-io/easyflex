@@ -20,7 +20,7 @@ class OperatieParameters:
         fields: list,
         runcount: int,
         service: str,
-        sandbox: bool,
+        sandbox: bool = False,
         max_rows: int = 5000,
         inherit_datatypes=True,
     ):
